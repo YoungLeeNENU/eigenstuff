@@ -8,12 +8,13 @@ if os.path.exists('cache.tsv'):
         cache[q] = int(n)
 
 def get_n_results_dumb(q):
-    r = requests.get('http://www.google.com/search',
-                     params={'q': q,
-                             "tbs": "li:1"})
+    r = requests.get('http://global.bing.com/search',
+                     params={'q': q})
     r.raise_for_status()
-    soup = bs4.BeautifulSoup(r.text)
-    s = soup.find('div', {'id': 'resultStats'}).text
+    soup = bs4.BeautifulSoup(r.text, "html.parser")
+    if not soup.find('span', {'class': 'sb_count'}):
+        return 0
+    s = soup.find('span', {'class': 'sb_count'}).text
     if not s:
         return 0
     m = re.search(r'([0-9,]+)', s)
@@ -25,8 +26,8 @@ if False:
     verbs_ij = ['switch', 'switched', 'move', 'moved', 'code']
 elif True:
     tag = 'js_framework'
-    items = ['react', 'angular', 'vue', 'backbone', 'ember', 'knockout', 'jquery']
-    verbs_ij = ['switch', 'switched', 'move', 'moved']
+    items = ['vue2', 'angular2', 'react', 'vue1', 'angular1', 'backbone', 'ember', 'knockout', 'jquery']
+    verbs_ij = ['switch', 'switched', 'move', 'moved', 'migration']
 elif True:
     tag = 'database'
     items = ['mysql', 'postgres', 'mongodb', 'cassandra', 'dynamodb', 'mariadb', 'riak', 'redis']
